@@ -1,0 +1,393 @@
+/* --- FONTS --- */
+@font-face {
+    font-family: "Archivo Black";
+    src: url("fonts/Archivo-Black.otf");
+    font-weight: regular;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("fonts/IBMPlexMono-Regular.ttf");
+    font-weight: regular;
+}
+
+@font-face {
+    font-family: "PMing";
+    src: url("fonts/PMINGLIU.ttf");
+    font-weight: regular;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("fonts/Roboto_Condensed-Regular.ttf");
+    font-weight: regular;
+}
+
+/* --- RESET --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+/* container fixed to viewport so only left panel scrolls */
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    /* prevent page scrolling */
+}
+
+.panel {
+    height: 100%;
+    /* no default overflow here so individual panels control their own scrolling */
+}
+
+/* LEFT PANEL: scrollable for long text */
+.leftp {
+    width: 25%;
+    padding: 1.5rem 0.5rem 1rem 1.5rem;
+    transition: width 0.1s ease;
+    overflow: auto;
+    /* left panel can scroll */
+    background-image: url('assets/left_background.png');
+    /* <-- your image path */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+}
+
+/* make sure the text sits above the background */
+.leftp .text-content {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+}
+
+/* --- TYPOGRAPHY --- */
+
+.title sup {
+    font-size: 1.4rem;
+    background-color: #C24832;
+    font-family: "Roboto";
+    color: #FFFBFF;
+}
+
+.title {
+    display: inline-block;
+    margin-left: -1rem;
+    vertical-align: baseline;
+}
+
+.head {
+    font-family: "Unbounded";
+    font-size: 2.5rem;
+    line-height: 2.8rem;
+}
+
+.head-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 12rem;
+    height: auto;
+}
+
+.indent {
+    margin-left: 3.2rem;
+}
+
+#chinese {
+    font-family: "PMing";
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    color: #898989;
+}
+
+.text-block {
+    font-size: 0.8rem;
+    font-family: "Archivo Black";
+    color: black;
+    display: inline;
+    line-height: 1.4rem;
+}
+
+/* indent first line of paragraphs inside .text-block */
+.text-block p {
+    text-indent: 1.2rem;  /* first-line indent; change to taste */
+}
+
+
+
+.text-content .footer {
+    font-size: 0.7rem;
+    font-weight: 400;
+    font-family: "IBM Plex Mono";
+    margin-bottom: 0.5rem;
+}
+
+/* --- DRAG BAR --- */
+#dragbar {
+    width: 0px;
+    background-color: #C24832;
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(to right, #FFFBFF, 70%, #C24832);
+}
+
+/* RIGHT PANEL: contain image, no scrolling */
+.rightp {
+    flex: 1;
+    background-color: black;
+    display: flex;
+    justify-content: stretch;
+    /* or flex-start */
+    align-items: stretch;
+    overflow: hidden;
+    /* prevent scroll */
+    position: relative;
+    padding: 0;
+}
+
+.image-display,
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    /* <-- ensure this is present */
+}
+
+.image-wrapper.overlay-active #showcase-image {
+    filter: brightness(0.8) blur(2px);
+}
+
+/* ensure the image fits the panel without creating scrollbars */
+#showcase-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* fill and crop */
+    display: block;
+    transition: filter 0.1s, opacity 0.1s;
+}
+
+/* --- TRANSLATION OVERLAY --- */
+.translation-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* all overlay images are absolutely positioned and scale to fit container */
+.translation-overlay img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* match #showcase-image */
+    top: 0;
+    left: 0;
+}
+
+/* hide container when empty */
+.translation-overlay.hidden {
+    display: none;
+}
+
+/* --- CONTROLS --- */
+.controls {
+    position: absolute;
+    top: 1.5rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+}
+
+.controls button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #C24832;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.05s ease;
+    padding: 0;
+}
+
+.controls button:hover {
+    transform: scale(1.15);
+}
+
+.ctrl img,
+.nav img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.hover-translate {
+    cursor: none;
+}
+
+.head-hover-translate {
+    cursor: none;
+}
+
+#head-tooltip {
+    position: absolute;
+    background: #C24832;
+    color: #FFFBFF;
+    font-family: "Roboto";
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .1s;
+    z-index: 9999;
+    text-align: left;
+    font-size: 2.3rem;
+    display: inline;
+    /* above everything */
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #C24832;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.image-grid img {
+    width: 100%;
+    transition: transform 0.05s ease;
+    cursor: pointer;
+}
+
+.image-grid img:hover {
+    transform: scale(1.15);
+}
+
+.textpics {
+    display: block;
+    width: 20%;
+    height: auto;
+    display: inline;
+}
+
+#button-tooltip {
+    position: fixed;
+    background: #C24832;
+    color: #FFFBFF;
+    font-family: "Roboto";
+    font-size: 1rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 99999;
+    white-space: nowrap;
+}
+
+#tooltip {
+    position: fixed;
+    /* Use fixed so it is always on top of everything */
+    background: #C24832;
+    color: #FFFBFF;
+    font-family: "Roboto";
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .1s;
+    z-index: 99999;
+    /* Make sure this is higher than any other element */
+    text-align: left;
+    font-size: 1.4rem;
+    display: inline;
+}
+
+/* ...existing code... */
+
+@keyframes overlay-lock-scale {
+    0% {
+        transform: scale(1);
+    }
+
+    70% {
+        transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.fixed-overlay.animate-lock {
+    animation: overlay-lock-scale 0.45s cubic-bezier(.5, 1.7, .5, 1) 1;
+    z-index: 11;
+}
+
+/* ...existing code... */
+
+.location-label {
+    position: absolute;
+    font-size: 0.7rem;
+    font-weight: 400;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    color: #FFFBFF;
+    font-family: "IBM Plex Mono";
+    z-index: 30;
+    pointer-events: none;
+}
+
+.leftp .text-content {
+    position: relative;
+    z-index: auto;
+    /* removed z-index to allow blend with parent's background */
+    background: transparent;
+}
+
+/* apply blend only to regular text (not .title or .head) */
+.leftp.text-blend .text-content :not(.title):not(.title *):not(.head):not(.head *) {
+    mix-blend-mode: multiply;
+    /* try multiply / overlay / screen etc. */
+    color: rgba(0, 0, 0, 0.9);
+    /* tweak for legibility */
+    -webkit-font-smoothing: antialiased;
+    transition: color .18s ease;
+}
+
+hr {
+    border: none;
+    border-top: 2.5px solid #C24832;
+    margin-left: -1rem;
+    margin-right: 8rem;
+}
